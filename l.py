@@ -5,7 +5,11 @@ from datetime import datetime
 from PIL import Image, ImageTk
 import os
 
+<<<<<<< HEAD
 print("halo mahesa")
+=======
+print("hello000")
+>>>>>>> 490e68cd6ea84fdd8dc3146053b2bc652a631122
 class LoginWindow:
     def __init__(self):
         self.window = tk.Tk()
