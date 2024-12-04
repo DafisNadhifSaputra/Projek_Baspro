@@ -5,11 +5,7 @@ from datetime import datetime
 from PIL import Image, ImageTk
 import os
 
-<<<<<<< HEAD
 print("halo mahesa")
-=======
-print("hello000")
->>>>>>> 490e68cd6ea84fdd8dc3146053b2bc652a631122
 class LoginWindow:
     def __init__(self):
         self.window = tk.Tk()
@@ -106,8 +102,8 @@ class PetShopApp:
         
         # Data produk dengan path gambar
         self.products = {
-            "Mie": {
-                "price": 2500000,
+            "Mie Yarmin": {
+                "price": 8000,
                 "stock": 5,
                 "category": "Hewan",
                 "image": "Mie.jpg"
