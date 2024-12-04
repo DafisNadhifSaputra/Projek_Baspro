@@ -5,11 +5,11 @@ from datetime import datetime
 from PIL import Image, ImageTk
 import os
 
-print("halo")
+print("halo mahesa")
 class LoginWindow:
     def __init__(self):
         self.window = tk.Tk()
-        self.window.title("🐾 Pawsome Pet Shop Login 🐾")
+        self.window.title("🐾 Main Login 🐾")
         self.window.geometry("1920x1080")
         self.window.configure(bg="#f0f0f0")
         
