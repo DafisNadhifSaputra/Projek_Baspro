@@ -83,12 +83,12 @@ class LoginWindow:
             messagebox.showinfo("Success", "Login successful!")
             self.window.destroy()
             root = tk.Tk()
-            app = PetShopApp(root, username, users[username]["balance"])
+            app = Stupid_chicken(root, username, users[username]["balance"])
             root.mainloop()
         else:
             messagebox.showerror("Error", "Invalid username or password!")
 
-class PetShopApp:
+class Stupid_chicken:
     def __init__(self, root, username, initial_balance):
         self.root = root
         self.root.title("🐾 Pawsome Pet Shop 🐾")
@@ -103,13 +103,13 @@ class PetShopApp:
         
         # Data produk dengan path gambar
         self.products = {
-            "Mie Yarmin": {
-                "price": 8000,
+            "Nasi Ayam Lada Hitam": {
+                "price": 12000,
                 "stock": 5,
-                "category": "Hewan",
-                "image": "Mie.jpg"
+                "category": "Makanan",
+                "image": "images/stupidchiken_ladahitam.jpg"
             },
-            "Kucing Anggora": {
+            "Nasi Ayam Sambal Matah": {
                 "price": 2000000,
                 "stock": 3,
                 "category": "Hewan",
@@ -155,7 +155,7 @@ class PetShopApp:
         header_frame.pack(fill=tk.X, pady=10)
         
         tk.Label(header_frame, 
-                text="🐾 Pawsome Pet Shop 🐾", 
+                text="Stupid Chicken", 
                 font=("Helvetica", 24, "bold")).pack(side=tk.LEFT, padx=10)
         
         self.balance_label = tk.Label(header_frame,
@@ -176,7 +176,7 @@ class PetShopApp:
         filter_frame.pack(fill=tk.X, pady=10)
         
         tk.Label(filter_frame, text="Filter:").pack(side=tk.LEFT, padx=5)
-        categories = ["Semua", "Hewan", "Makanan", "Aksesoris"]
+        categories = ["Semua", "Minuman", "Makanan"]
         self.category_var = tk.StringVar(value="Semua")
         for category in categories:
             ttk.Radiobutton(filter_frame, text=category, value=category,
