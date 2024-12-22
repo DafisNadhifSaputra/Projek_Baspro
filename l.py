@@ -60,30 +60,227 @@ class LoginWindow:
         password = self.password_entry.get()
         
         if not username or not password:
-            messagebox.showerror("Error", "Database User tidak ditemukan")
+            messagebox.showerror("Error", "Please enter username and password")
             return
         
         try:
-            with open("users.json", "r") as f:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            users_path = os.path.join(script_dir, "users.json")
+            with open(users_path, "r") as f:
                 users = json.load(f)
         except FileNotFoundError:
             messagebox.showerror("Error", "Database User tidak ditemukan")
             return
-        
-        if username in users and users[username]["password"] == password:
-            messagebox.showinfo("Success", "Login Mahasiswa successful!")
-            self.window.destroy()
-            root = tk.Tk()
-            app = pilih_kedai(root, username, users[username]["balance"])
-            root.mainloop()
-        elif username in users and (users['admin1'][password] or users['admin2'] or users['admin3'] or users['admin4']):
-            messagebox.showinfo("Success", "Login Admin Successfull")
-            self.window.destroy()
-            root = tk.tk()
-            app = admin_window(root, username, users[username]["balance"])
-            root.mainloop()
+
+        # Check if admin login
+        admin_accounts = ['admin1', 'admin2', 'admin3', 'admin4']
+        if username in admin_accounts:
+            if username in users and users[username]["password"] == password:
+                messagebox.showinfo("Success", "Login Admin Successful!")
+                self.window.destroy()
+                root = tk.Tk()
+                app = AdminWindow(root, username)
+                root.mainloop()
+            else:
+                messagebox.showerror("Error", "Invalid admin credentials!")
+            return
+
+        # Regular user login
+        if username in users:
+            if users[username]["password"] == password:
+                messagebox.showinfo("Success", "Login Mahasiswa successful!")
+                self.window.destroy()
+                root = tk.Tk()
+                app = pilih_kedai(root, username, users[username]["balance"])
+                root.mainloop()
+            else:
+                messagebox.showerror("Error", "Invalid password!")
         else:
-            messagebox.showerror("Error", "Invalid username or password!")
+            messagebox.showerror("Error", "Username not found!")
+
+class AdminWindow:
+    def __init__(self, root, admin_id):
+        self.root = root
+        self.root.title(f"Admin Dashboard - {admin_id}")
+        self.root.geometry("1920x1080")
+        self.root.configure(bg="#f0f0f0")
+
+        self.admin_id = admin_id
+        self.store_name = self.get_store_name(admin_id)
+        self.transactions = self.load_transactions()
+
+        # Data produk untuk setiap toko (Anda dapat memindahkannya ke file JSON terpisah jika perlu)
+        self.products = {
+            "Stupid Chicken": {
+                "Nasi Ayam Lada Hitam": {"price": 12000},
+                "Nasi Ayam Sambal Matah": {"price": 12000},
+                "Royal Canin": {"price": 150000},
+                "Whiskas": {"price": 85000},
+                "Kandang Premium": {"price": 750000},
+                "Mainan Kucing": {"price": 45000}
+            },
+            "Bakso Bakar": {
+                # ... (produk untuk Bakso Bakar, sesuaikan)
+                "Bakso Bakar Original": {"price": 15000},
+                "Bakso Bakar Pedas": {"price": 17000},
+                "Es Teh Manis": {"price": 5000}
+            },
+            "Mie Setan": {
+                # ... (produk untuk Mie Setan, sesuaikan)
+                "Mie Setan Level 1": {"price": 12000},
+                "Mie Setan Level 3": {"price": 15000},
+                "Mie Setan Level 5": {"price": 18000},
+                "Es Jeruk": {"price": 6000}
+            },
+            "Geprek Bensu": {
+                # ... (produk untuk Geprek Bensu, sesuaikan)
+                "Ayam Geprek Original": {"price": 15000},
+                "Ayam Geprek Keju": {"price": 20000},
+                "Nasi Putih": {"price": 5000},
+                "Es Teh Tawar": {"price": 4000}
+            }
+        }
+
+        self.create_widgets()
+
+    def get_store_name(self, admin_id):
+        store_mapping = {
+            "admin1": "Stupid Chicken",
+            "admin2": "Bakso Bakar",
+            "admin3": "Mie Setan",
+            "admin4": "Geprek Bensu"
+        }
+        return store_mapping.get(admin_id, "Unknown Store")
+
+    def create_widgets(self):
+        # Header
+        header_frame = ttk.Frame(self.root)
+        header_frame.pack(fill=tk.X, pady=10, padx=20)
+
+        tk.Label(
+            header_frame,
+            text=f"{self.store_name} - Dashboard",
+            font=("Helvetica", 24, "bold")
+        ).pack(side=tk.LEFT)
+
+        # Orders Table
+        orders_frame = ttk.Frame(self.root)
+        orders_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
+
+        columns = ("datetime", "username", "items", "total", "Status")
+        self.orders_tree = ttk.Treeview(orders_frame, columns=columns, show="headings")
+
+        for col in columns:
+            self.orders_tree.heading(col, text=col)
+
+        scrollbar = ttk.Scrollbar(orders_frame, orient="vertical", command=self.orders_tree.yview)
+        self.orders_tree.configure(yscrollcommand=scrollbar.set)
+
+        self.orders_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Buttons Frame
+        buttons_frame = ttk.Frame(self.root)
+        buttons_frame.pack(fill=tk.X, pady=10, padx=20)
+
+        ttk.Button(
+            buttons_frame,
+            text="Refresh Orders",
+            command=self.refresh_orders
+        ).pack(side=tk.LEFT, padx=5)
+
+        ttk.Button(
+            buttons_frame,
+            text="Update Status",
+            command=self.update_order_status
+        ).pack(side=tk.LEFT, padx=5)
+
+        self.refresh_orders()
+
+    def load_transactions(self):
+        try:
+            # Dapatkan path absolut ke direktori tempat script ini berada
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # Gabungkan dengan nama file transactions.json
+            transactions_path = os.path.join(script_dir, "transactions.json")
+            print(f"Loading transactions from: {transactions_path}")  # Cetak path untuk debugging
+            with open(transactions_path, "r") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return []
+
+    def refresh_orders(self):
+        # Clear existing items
+        for item in self.orders_tree.get_children():
+            self.orders_tree.delete(item)
+
+        # Reload transactions
+        self.transactions = self.load_transactions()
+
+        # Filter and display orders for this store
+        for transaction in self.transactions:
+            # Periksa apakah transaksi berasal dari toko yang sesuai
+            if any(item in self.products[self.store_name] for item in transaction["items"].keys()):
+                # Ambil semua item dari transaksi
+                items_str = ", ".join(f"{k}({v})" for k, v in transaction["items"].items())
+
+                self.orders_tree.insert("", tk.END, values=(
+                    transaction["datetime"],
+                    transaction.get("username", "Unknown"),
+                    items_str,
+                    f"Rp {transaction['total']:,}",
+                    transaction.get("status", "Pending")
+                ))
+
+    def update_order_status(self):
+        selected = self.orders_tree.selection()
+        if not selected:
+            messagebox.showwarning("No Selection", "Please select an order to update")
+            return
+
+        status_window = tk.Toplevel(self.root)
+        status_window.title("Update Status")
+        status_window.geometry("300x150")
+
+        status_var = tk.StringVar(value="Processing")
+        statuses = ["Processing", "Ready", "Completed", "Cancelled"]
+
+        for status in statuses:
+            ttk.Radiobutton(
+                status_window,
+                text=status,
+                value=status,
+                variable=status_var
+            ).pack(pady=5)
+
+        def update():
+            new_status = status_var.get()
+            item = selected[0]
+            transaction_date = self.orders_tree.item(item)["values"][0]
+
+            # Update in treeview
+            values = list(self.orders_tree.item(item)["values"])
+            values[-1] = new_status
+            self.orders_tree.item(item, values=values)
+
+            # Update in transactions.json
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            transactions_path = os.path.join(script_dir, "transactions.json")
+            for transaction in self.transactions:
+                if transaction["datetime"] == transaction_date:
+                    transaction["status"] = new_status
+
+            with open(transactions_path, "w") as f:
+                json.dump(self.transactions, f)
+
+            status_window.destroy()
+            messagebox.showinfo("Success", "Order status updated successfully!")
+
+        ttk.Button(
+            status_window,
+            text="Update",
+            command=update
+        ).pack(pady=10)
 
 class pilih_kedai:
     def __init__(self, root, username, balance):
@@ -502,6 +699,7 @@ class Stupid_chicken:
         self.balance_label.config(text=f"Saldo: Rp {self.current_balance:,}")
         
         transaction = {
+            "username": self.username,
             "datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "items": dict(self.cart),
             "total": total
@@ -527,19 +725,23 @@ class Stupid_chicken:
 
     def save_transaction(self, transaction):
         try:
-            with open("transactions.json", "r") as f:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            transactions_path = os.path.join(script_dir, "transactions.json")
+            with open(transactions_path, "r") as f:
                 transactions = json.load(f)
         except FileNotFoundError:
             transactions = []
-        
+
         transactions.append(transaction)
-        
-        with open("transactions.json", "w") as f:
+
+        with open(transactions_path, "w") as f:
             json.dump(transactions, f)
 
     def load_transaction_history(self):
         try:
-            with open("transactions.json", "r") as f:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            transactions_path = os.path.join(script_dir, "transactions.json")
+            with open(transactions_path, "r") as f:
                 self.transactions = json.load(f)
         except FileNotFoundError:
             self.transactions = []
