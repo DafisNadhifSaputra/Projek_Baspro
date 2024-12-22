@@ -14,15 +14,6 @@ class LoginWindow:
         self.window.geometry("1920x1080")
         self.window.configure(bg="#f0f0f0")
         
-        
-        if not os.path.exists("users.json"):
-            default_users = {
-                "admin": {"password": "admin123", "balance": 5000000},
-                "kasir": {"password": "kasir123", "balance": 5000000}
-            }
-            with open("users.json", "w") as f:
-                json.dump(default_users, f)
-        
         self.create_widgets()
         
     def create_widgets(self):
@@ -80,18 +71,122 @@ class LoginWindow:
             return
         
         if username in users and users[username]["password"] == password:
-            messagebox.showinfo("Success", "Login successful!")
+            messagebox.showinfo("Success", "Login Mahasiswa successful!")
             self.window.destroy()
             root = tk.Tk()
-            app = Stupid_chicken(root, username, users[username]["balance"])
+            app = pilih_kedai(root, username, users[username]["balance"])
+            root.mainloop()
+        elif username in users and (users['admin1'][password] or users['admin2'] or users['admin3'] or users['admin4']):
+            messagebox.showinfo("Success", "Login Admin Successfull")
+            self.window.destroy()
+            root = tk.tk()
+            app = admin_window(root, username, users[username]["balance"])
             root.mainloop()
         else:
             messagebox.showerror("Error", "Invalid username or password!")
 
+class pilih_kedai:
+    def __init__(self, root, username, balance):
+        self.root = root
+        self.root.title("Pilih Kedai")
+        self.root.geometry("1920x1080")
+        self.root.configure(bg="#f0f0f0")
+
+        self.username = username
+        self.balance = balance
+        
+        self.create_widgets()
+
+    def create_widgets(self):
+        main_frame = ttk.Frame(self.root, padding="20")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        title_label = tk.Label(
+            main_frame,
+            text="Pilih Kedai UNESA",
+            font=("Helvetica", 30, "bold"),
+            bg="#f0f0f0"
+        )
+        title_label.pack(pady=20)
+
+        # Balance display
+        balance_label = tk.Label(
+            main_frame,
+            text=f"Saldo: Rp {self.balance:,}",
+            font=("Helvetica", 14),
+            bg="#f0f0f0"
+        )
+        balance_label.pack(pady=10)
+
+        # Store buttons frame
+        stores_frame = ttk.Frame(main_frame)
+        stores_frame.pack(pady=50)
+
+        # Create grid for store buttons
+        stores = [
+            ("Stupid Chicken", self.open_stupid_chicken),
+            ("Bakso Bakar", self.open_bakso_bakar),
+            ("Mie Setan", self.open_mie_setan),
+            ("Geprek Bensu", self.open_geprek_bensu)
+        ]
+
+        for idx, (store_name, command) in enumerate(stores):
+            row = idx // 2
+            col = idx % 2
+            
+            store_frame = ttk.Frame(stores_frame)
+            store_frame.grid(row=row, column=col, padx=20, pady=20)
+
+            # Try to load store logo
+            try:
+                image = Image.open(f"images/{store_name.lower().replace(' ', '_')}.png")
+                image = image.resize((200, 200))
+                photo = ImageTk.PhotoImage(image)
+                logo = tk.Label(store_frame, image=photo)
+                logo.image = photo
+                logo.pack(pady=10)
+            except:
+                # If image not found, show text only
+                pass
+
+            tk.Button(
+                store_frame,
+                text=store_name,
+                font=("Helvetica", 12, "bold"),
+                width=20,
+                height=2,
+                command=command
+            ).pack()
+
+    def open_stupid_chicken(self):
+        self.root.destroy()
+        root = tk.Tk()
+        app = Stupid_chicken(root, self.username, self.balance)
+        root.mainloop()
+
+    def open_bakso_bakar(self):
+        self.root.destroy()
+        root = tk.Tk()
+        app = Bakso_bakar(root, self.username, self.balance)
+        root.mainloop()
+
+    def open_mie_setan(self):
+        self.root.destroy()
+        root = tk.Tk()
+        app = Mie_setan(root, self.username, self.balance)
+        root.mainloop()
+
+    def open_geprek_bensu(self):
+        self.root.destroy()
+        root = tk.Tk()
+        app = Geprek_bensu(root, self.username, self.balance)
+        root.mainloop()
+        
+
 class Stupid_chicken:
     def __init__(self, root, username, initial_balance):
         self.root = root
-        self.root.title("🐾 Pawsome Pet Shop 🐾")
+        self.root.title("🐾 Stupid Chicken 🐾")
         self.root.geometry("1920x1080")
         self.root.configure(bg="#f0f0f0")
         
@@ -105,15 +200,15 @@ class Stupid_chicken:
         self.products = {
             "Nasi Ayam Lada Hitam": {
                 "price": 12000,
-                "stock": 5,
+                "stock": True,
                 "category": "Makanan",
                 "image": "images/stupidchiken_ladahitam.jpg"
             },
             "Nasi Ayam Sambal Matah": {
-                "price": 2000000,
-                "stock": 3,
-                "category": "Hewan",
-                "image": "images/angora.jpg"
+                "price": 12000,
+                "stock": "Ada",
+                "category": "Makanan",
+                "image": "images/stupidchiken_sambalmatah.jpeg"
             },
             "Royal Canin": {
                 "price": 150000,
@@ -284,13 +379,31 @@ class Stupid_chicken:
             
             tk.Label(product_frame, 
                     text=f"Rp {details['price']:,}").pack()
-            
+            stock = "Ada" if details['stock'] == True else "Habis"
             tk.Label(product_frame,
-                    text=f"Stok: {details['stock']}").pack()
+                    text=f"Stok: {stock}").pack()
             
-            buy_button = ttk.Button(product_frame, text="+ Keranjang")
-            buy_button.configure(command=self.create_buy_command(name))
-            buy_button.pack(pady=5)
+            # Add quantity control frame
+            quantity_frame = ttk.Frame(product_frame)
+            quantity_frame.pack(pady=5)
+            
+            minus_btn = ttk.Button(quantity_frame, text="-", width=3,
+                                 command=lambda p=name: self.decrease_quantity(p))
+            minus_btn.pack(side=tk.LEFT, padx=2)
+            
+            quantity_label = tk.Label(quantity_frame, 
+                                    text=str(self.cart.get(name, 0)),
+                                    width=5)
+            quantity_label.pack(side=tk.LEFT, padx=2)
+            
+            plus_btn = ttk.Button(quantity_frame, text="+", width=3,
+                                command=lambda p=name: self.add_to_cart(p))
+            plus_btn.pack(side=tk.LEFT, padx=2)
+            
+            # Store reference to quantity label
+            if not hasattr(self, 'quantity_labels'):
+                self.quantity_labels = {}
+            self.quantity_labels[name] = quantity_label
             
             col += 1
             if col > 2:
@@ -301,10 +414,58 @@ class Stupid_chicken:
         for i in range(3):
             self.product_grid.grid_columnconfigure(i, weight=1)
 
-    def create_buy_command(self, product_name):
-        def buy_click():
-            self.add_to_cart(product_name)
-        return buy_click
+    def decrease_quantity(self, product_name):
+        if product_name in self.cart:
+            if self.cart[product_name] > 1:
+                self.cart[product_name] -= 1
+            else:
+                del self.cart[product_name]
+            
+            # Update quantity label
+            if product_name in self.quantity_labels:
+                self.quantity_labels[product_name].config(
+                    text=str(self.cart.get(product_name, 0)))
+            
+            self.update_cart_display()
+    
+    # Di kelas Stupid_chicken:
+
+    def check_stock_available(self, product_name, requested_quantity=1):
+        stock = self.products[product_name]["stock"]
+        
+        # Jika stock adalah string "Ada"
+        if isinstance(stock, str) and stock.lower() == True:
+            return True
+        
+        # Jika stock adalah angka
+        elif isinstance(stock, (int, float)):
+            current_in_cart = self.cart.get(product_name, 0)
+            return stock >= (current_in_cart + requested_quantity)
+        
+        return False
+
+    def add_to_cart(self, product_name):
+        if self.check_stock_available(product_name):
+            if product_name in self.cart:
+                # Cek stok lagi untuk penambahan
+                if self.check_stock_available(product_name, 1):
+                    self.cart[product_name] += 1
+                else:
+                    messagebox.showwarning("Stok Tidak Cukup", 
+                                        f"Maaf, stok {product_name} tidak mencukupi!")
+                    return
+            else:
+                self.cart[product_name] = 1
+            
+            # Update quantity label
+            if product_name in self.quantity_labels:
+                self.quantity_labels[product_name].config(
+                    text=str(self.cart[product_name]))
+            
+            self.update_cart_display()
+        else:
+            messagebox.showwarning("Stok Habis", 
+                                f"Maaf, {product_name} sedang kosong!")
 
     def update_cart_display(self):
         self.cart_text.delete(1.0, tk.END)
@@ -313,7 +474,7 @@ class Stupid_chicken:
         for product, quantity in self.cart.items():
             price = self.products[product]["price"]
             subtotal = price * quantity
-            total = total + subtotal
+            total += subtotal
             
             self.cart_text.insert(tk.END,
                                 f"{product} x{quantity}\n"
@@ -353,13 +514,12 @@ class Stupid_chicken:
         messagebox.showinfo("Sukses", "Terima kasih atas pembelian Anda!")
 
     def add_to_cart(self, product_name):
-        if self.products[product_name]["stock"] > 0:
+        if self.products[product_name]["stock"] == True:
             if product_name in self.cart:
                 self.cart[product_name] = self.cart[product_name] + 1
             else:
                 self.cart[product_name] = 1
                 
-            self.products[product_name]["stock"] = self.products[product_name]["stock"] - 1
             self.update_cart_display()
             self.display_products()
         else:
