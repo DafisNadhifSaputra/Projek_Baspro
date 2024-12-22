@@ -1,1 +1,54 @@
-[{"username": "dafis.23143@mhs.unesa.ac.id", "datetime": "2024-12-22 08:57:31", "items": {"Nasi Ayam Lada Hitam": 2}, "total": 24000, "status": "Completed"}]
+[
+    {
+        "username": "dafis.23143@mhs.unesa.ac.id",
+        "datetime": "2024-12-22 16:30:00",
+        "items": [
+            {
+                "name": "Nasi Ayam Lada Hitam",
+                "quantity": 2
+            }
+        ],
+        "total": 24000,
+        "status": "Completed",
+        "estimasi_waktu": 10
+    },
+    {
+        "username": "dafis.23143@mhs.unesa.ac.id",
+        "datetime": "2024-12-22 17:30:18",
+        "items": [
+            {
+                "name": "Nasi Ayam Lada Hitam",
+                "quantity": 2
+            }
+        ],
+        "total": 24000,
+        "status": "Completed",
+        "estimasi_waktu": 10
+    },
+    {
+        "username": "dafis.23143@mhs.unesa.ac.id",
+        "datetime": "2024-12-22 17:44:00",
+        "items": [
+            {
+                "name": "Nasi Ayam Lada Hitam",
+                "quantity": 2
+            }
+        ],
+        "total": 24000,
+        "status": "Processing",
+        "estimasi_waktu": 10
+    },
+    {
+        "username": "mahesa.23157@mhs.unesa.ac.id",
+        "datetime": "2024-12-22 18:02:49",
+        "items": [
+            {
+                "name": "Nasi Ayam Lada Hitam",
+                "quantity": 1
+            }
+        ],
+        "total": 12000,
+        "status": "Processing",
+        "estimasi_waktu": 5
+    }
+]
