@@ -1,29 +1,19 @@
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox, ttk, simpledialog
 import json
 from datetime import datetime
+from store.stupidchicken import Stupid_chicken
+from store.stand03 import stand03
 import locale
 from PIL import Image, ImageTk
 import os
-print("halo aron")
 
-print("halo mahesa!!")
 locale.setlocale(locale.LC_ALL, 'id_ID.UTF-8') 
-import tkinter as tk
-from tkinter import messagebox, ttk
-import json
-from datetime import datetime
-from PIL import Image, ImageTk
-import os
-import locale
-
-locale.setlocale(locale.LC_ALL, 'id_ID.UTF-8')
-
 class LoginWindow:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("🐾 Main Login 🐾")
-        self.window.geometry("1920x1080")
+        self.window.geometry("1280x720")
         self.window.configure(bg="#f0f0f0")
         
         self.create_widgets()
@@ -49,17 +39,21 @@ class LoginWindow:
         self.username_entry.pack(pady=15)
         self.username_entry.pack(ipady=10)
 
-        ttk.Label(login_frame, text="Password:").pack(pady=5)
+        ttk.Label(login_frame, text="Password:", font=("Helvetica", 10, "bold")).pack(pady=5)
         self.password_entry = ttk.Entry(login_frame, show="*")
         self.password_entry.pack(pady=5, ipady=10)
         self.password_entry.configure(width=100)
 
-        login_button = ttk.Button(
+        login_button = tk.Button(
             login_frame,
             text="Login",
+            width=10,
+            height=2,
+            font=("Helvetica", 10, "bold"),
             command=self.login
         )
         login_button.pack(pady=20)
+        
         
     def login(self):
         username = self.username_entry.get()
@@ -71,14 +65,14 @@ class LoginWindow:
         
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            users_path = os.path.join(script_dir, "users.json")
+            users_path = os.path.join(script_dir, "database_user_admin/users.json")
             with open(users_path, "r") as f:
                 users = json.load(f)
         except FileNotFoundError:
             messagebox.showerror("Error", "Database User tidak ditemukan")
             return
 
-        # Check if admin login
+        # Cek login admin
         admin_accounts = ['admin1', 'admin2', 'admin3', 'admin4']
         if username in admin_accounts:
             if username in users and users[username]["password"] == password:
@@ -91,7 +85,7 @@ class LoginWindow:
                 messagebox.showerror("Error", "Invalid admin credentials!")
             return
 
-        # Regular user login
+        # cek login user
         if username in users:
             if users[username]["password"] == password:
                 messagebox.showinfo("Success", "Login Mahasiswa successful!")
@@ -105,60 +99,33 @@ class LoginWindow:
             messagebox.showerror("Error", "Username not found!")
 
 class AdminWindow:
+    """Class untuk membuat window Admin Dashboard"""
     def __init__(self, root, admin_id):
         self.root = root
         self.root.title(f"Admin Dashboard - {admin_id}")
-        self.root.geometry("1920x1080")
+        self.root.geometry("1280x720")
         self.root.configure(bg="#f0f0f0")
 
         self.admin_id = admin_id
         self.store_name = self.get_store_name(admin_id)
         self.transactions = self.load_transactions()
-
-        # Data produk untuk setiap toko (Anda dapat memindahkannya ke file JSON terpisah jika perlu)
-        self.products = {
-            "Stupid Chicken": {
-                "Nasi Ayam Lada Hitam": {"price": 12000},
-                "Nasi Ayam Sambal Matah": {"price": 12000},
-                "Royal Canin": {"price": 150000},
-                "Whiskas": {"price": 85000},
-                "Kandang Premium": {"price": 750000},
-                "Mainan Kucing": {"price": 45000}
-            },
-            "Bakso Bakar": {
-                # ... (produk untuk Bakso Bakar, sesuaikan)
-                "Bakso Bakar Original": {"price": 15000},
-                "Bakso Bakar Pedas": {"price": 17000},
-                "Es Teh Manis": {"price": 5000}
-            },
-            "Mie Setan": {
-                # ... (produk untuk Mie Setan, sesuaikan)
-                "Mie Setan Level 1": {"price": 12000},
-                "Mie Setan Level 3": {"price": 15000},
-                "Mie Setan Level 5": {"price": 18000},
-                "Es Jeruk": {"price": 6000}
-            },
-            "Geprek Bensu": {
-                # ... (produk untuk Geprek Bensu, sesuaikan)
-                "Ayam Geprek Original": {"price": 15000},
-                "Ayam Geprek Keju": {"price": 20000},
-                "Nasi Putih": {"price": 5000},
-                "Es Teh Tawar": {"price": 4000}
-            }
-        }
+        self.products_file = self.get_products_file(admin_id)
+        self.products = self.load_products()
 
         self.create_widgets()
 
     def get_store_name(self, admin_id):
+        """ Fungsi untuk mendapatkan nama toko berdasarkan admin_id """
         store_mapping = {
             "admin1": "Stupid Chicken",
-            "admin2": "Bakso Bakar",
+            "admin2": "data_produk/bakso_bakar.json",
             "admin3": "Mie Setan",
             "admin4": "Geprek Bensu"
         }
         return store_mapping.get(admin_id, "Unknown Store")
 
     def create_widgets(self):
+        """ Fungsi untuk membuat widget di dalam window """
         # Header
         header_frame = ttk.Frame(self.root)
         header_frame.pack(fill=tk.X, pady=10, padx=20)
@@ -169,7 +136,7 @@ class AdminWindow:
             font=("Helvetica", 24, "bold")
         ).pack(side=tk.LEFT)
 
-        # Orders Table
+        # Tabel Order
         orders_frame = ttk.Frame(self.root)
         orders_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 
@@ -185,51 +152,156 @@ class AdminWindow:
         self.orders_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Buttons Frame
+        # Tombol frame
         buttons_frame = ttk.Frame(self.root)
         buttons_frame.pack(fill=tk.X, pady=10, padx=20)
 
+        # Tombol refresh
         ttk.Button(
             buttons_frame,
             text="Refresh Orders",
             command=self.refresh_orders
         ).pack(side=tk.LEFT, padx=5)
 
+        # Tombol update order status
         ttk.Button(
             buttons_frame,
             text="Update Status",
             command=self.update_order_status
         ).pack(side=tk.LEFT, padx=5)
 
+        # Tombol hapus pesanan
+        ttk.Button(
+            buttons_frame,
+            text="Hapus Pesanan",
+            command=self.delete_order
+        ).pack(side=tk.LEFT, padx=5)
+
+        # Tombol kelola stok
+        ttk.Button(
+            buttons_frame,
+            text="Kelola Stok",
+            command=self.open_manage_stock
+        ).pack(side=tk.LEFT, padx=5)
+
         self.refresh_orders()
 
-    def load_transactions(self):
+    def open_manage_stock(self):
+        """ Fungsi untuk membuka window untuk mengatur stock produk """
+        stock_window = tk.Toplevel(self.root)
+        stock_window.title("Atur Stock Produk")
+        columns = ("Nama Produk", "Stock")
+        tree = ttk.Treeview(stock_window, columns=columns, show="headings")
+        tree.heading("Nama Produk", text="Nama Produk")
+        tree.heading("Stock", text="Stock")
+        tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        for product_name, data in self.products.items():
+            current_stock = data.get("stock", 0)
+            tree.insert("", tk.END, values=(product_name, current_stock))
+
+        def update_stock():
+            """ Fungsi untuk mengupdate stock produk """
+            selected = tree.selection()
+            if not selected:
+                messagebox.showwarning("Peringatan", "Pilih produk lebih dulu!")
+                return
+            prod_name, current_stock = tree.item(selected[0])["values"]
+            new_stock = simpledialog.askinteger("Ubah Stock", f"Masukkan stock baru untuk {prod_name}:", initialvalue=current_stock, parent=stock_window)
+            if new_stock is not None:
+                self.products[prod_name]["stock"] = new_stock
+                tree.set(selected[0], "Stock", new_stock)
+                self.save_products()
+                messagebox.showinfo("Sukses", f"Stock {prod_name} diubah menjadi {new_stock}!")
+
+        ttk.Button(stock_window, text="Update Stock", command=update_stock).pack(pady=5)
+
+    def delete_order(self):
+        """ Fungsi untuk menghapus pesanan """
+        selected_item = self.orders_tree.selection()
+        if not selected_item:
+            messagebox.showwarning("Peringatan", "Pilih pesanan yang akan dihapus!")
+            return
+        confirm = messagebox.askyesno("Konfirmasi", "Yakin ingin menghapus pesanan ini?")
+        if confirm:
+            # Ambil datetime dari item yang dipilih
+            item_values = self.orders_tree.item(selected_item[0])["values"]
+            transaction_datetime = item_values[0]
+                
+            try:
+                with open("data_transaksi/transactions.json", "r") as f:
+                    transactions = json.load(f)
+                    
+                # Hapus transaksi dari list
+                transactions = [t for t in transactions 
+                            if t["datetime"] != transaction_datetime]
+                
+                with open("data_transaksi/transactions.json", "w") as f:
+                    json.dump(transactions, f, indent=4)
+                
+            # Hapus item dari treeview
+                self.orders_tree.delete(selected_item)
+                
+                messagebox.showinfo("Sukses", "Pesanan berhasil dihapus!")
+                
+            except Exception as e:
+                messagebox.showerror("Error", f"Gagal menghapus pesanan: {str(e)}")
+    
+    def get_products_file(self, admin_id):
+        """ Fungsi untuk mendapatkan nama file produk berdasarkan admin_id """
+        store_mapping = {
+            "admin1": "stupidchiken.json",
+            "admin2": "bakso_bakar.json",
+            "admin3": "mie_setan.json",
+            "admin4": "geprek_bensu.json"
+        }
+        return store_mapping.get(admin_id, "unknown.json")
+    
+    def load_products(self):
+        """ Fungsi untuk memuat produk dari file JSON """
+        products_path = os.path.join("data_produk", self.products_file)
         try:
-            # Dapatkan path absolut ke direktori tempat script ini berada
+            with open(products_path, "r") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            messagebox.showerror("Error", f"File {self.products_file} tidak ditemukan!")
+            return {}
+        except json.JSONDecodeError:
+            messagebox.showerror("Error", f"Error decoding {self.products_file}!")
+            return {}
+
+    def load_transactions(self):
+        """ Fungsi untuk memuat transaksi dari file JSON """
+        try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            # Gabungkan dengan nama file transactions.json
-            transactions_path = os.path.join(script_dir, "transactions.json")
+            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
             print(f"Loading transactions from: {transactions_path}")  # Cetak path untuk debugging
             with open(transactions_path, "r") as f:
                 return json.load(f)
         except FileNotFoundError:
             return []
+        
+    def save_products(self):
+        """ Fungsi untuk menyimpan produk ke file JSON """
+        products_path = os.path.join("data_produk", self.products_file)
+        try:
+            with open(products_path, "w") as f:
+                json.dump(self.products, f, indent=4)
+        except Exception as e:
+            messagebox.showerror("Error", f"Gagal menyimpan: {e}")
 
     def refresh_orders(self):
-        # Clear existing items
+        """ Fungsi untuk merefresh pesanan """
         for item in self.orders_tree.get_children():
             self.orders_tree.delete(item)
 
-        # Reload transactions
+        # Load transactions
         self.transactions = self.load_transactions()
 
-        # Filter and display orders for this store
+        # Load produk berdasarkan nama toko
         for transaction in self.transactions:
-            # Periksa apakah transaksi berasal dari toko yang sesuai
-            if any(item in self.products[self.store_name] for item in [i['name'] for i in transaction["items"]]):
-                # Ambil semua item dari transaksi
+            if any(item in self.products for item in [i['name'] for i in transaction["items"]]):  # Ambil semua item dari transaksi
                 items_str = ", ".join(f"{item['name']}({item['quantity']})" for item in transaction["items"])
-                # items_str = ", ".join(f"{k}({v})" for k, v in transaction["items"].items())
 
                 self.orders_tree.insert("", tk.END, values=(
                     transaction["datetime"],
@@ -240,6 +312,7 @@ class AdminWindow:
                 ))
 
     def update_order_status(self):
+        """ Fungsi untuk mengupdate status pesanan """
         selected = self.orders_tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select an order to update")
@@ -265,19 +338,22 @@ class AdminWindow:
             item = selected[0]
             transaction_date = self.orders_tree.item(item)["values"][0]
 
-            # Update in treeview
+            # perbarui status di treeview
             values = list(self.orders_tree.item(item)["values"])
             values[-1] = new_status
             self.orders_tree.item(item, values=values)
 
-            # Update in transactions.json
+            # perbarui status di file JSON
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "transactions.json")
+            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
+            transactions_path1 = os.path.join(script_dir, "data_transaksi/transactionshistory.json")
             for transaction in self.transactions:
                 if transaction["datetime"] == transaction_date:
                     transaction["status"] = new_status
 
             with open(transactions_path, "w") as f:
+                json.dump(self.transactions, f)
+            with open(transactions_path1, "w") as f:
                 json.dump(self.transactions, f)
 
             status_window.destroy()
@@ -290,124 +366,143 @@ class AdminWindow:
         ).pack(pady=10)
 
 class pilih_kedai:
+    """Class untuk membuat window Pilih Kedai"""
     def __init__(self, root, username, balance, parent):
         self.root = root
         self.root.title("Pilih Kedai")
-        self.root.geometry("1920x1080")
+        self.root.geometry("1280x720")
         self.root.configure(bg="#f0f0f0")
+        self.root.resizable(False, False)
 
         self.parent = parent
         self.username = username
         self.balance = balance
-        
+
         self.create_widgets()
 
     def create_widgets(self):
+        """ Fungsi untuk membuat widget di dalam window """
         main_frame = ttk.Frame(self.root, padding="20")
         main_frame.pack(fill=tk.BOTH, expand=True)
+        main_frame.pack_propagate(False)
 
-        title_label = tk.Label(
-            main_frame,
+        # frame atas
+        top_frame = ttk.Frame(main_frame)
+        top_frame.pack(fill=tk.X)
+
+        # tombol kemabli ke login
+        tk.Button(
+            top_frame,
+            text="Kembali ke menu login",
+            font=("Helvetica", 10, "bold"),
+            width=20,
+            height=2,
+            bg="#FF0000",
+            command=self.kembali_ke_login
+        ).pack(side=tk.RIGHT, pady=(0,5), padx=(0,10))
+
+        # Frame untuk judul
+        title_frame = ttk.Frame(main_frame)
+        title_frame.pack(fill=tk.X, pady=(0,10))
+
+        tk.Label(
+            title_frame,
             text="Pilih Kedai UNESA",
-            font=("Helvetica", 30, "bold"),
+            font=("Helvetica", 24, "bold"),
             bg="#f0f0f0"
-        )
-        title_label.pack(pady=20)
+        ).pack()
 
-        # Balance display
-        balance_label = tk.Label(
-            main_frame,
+        tk.Label(
+            title_frame,
             text=f"Saldo: Rp {self.balance:,}",
-            font=("Helvetica", 14),
+            font=("Helvetica", 12),
             bg="#f0f0f0"
-        )
-        balance_label.pack(pady=10)
+        ).pack()
 
-        # Store buttons frame
+        # Frame untuk kedai
         stores_frame = ttk.Frame(main_frame)
-        stores_frame.pack(pady=50)
-
-        # Create grid for store buttons
+        stores_frame.pack(pady=(6,0)) 
+        
+        # daftar kedai
         stores = [
-            ("Stupid Chicken", self.open_stupid_chicken),
-            ("Bakso Bakar", self.open_bakso_bakar),
-            ("Mie Setan", self.open_mie_setan),
-            ("Geprek Bensu", self.open_geprek_bensu)
+            ("Stupid Chicken", self.open_stupid_chicken, "images/stupidchiken/gambar_stupidchiken.jpg"),
+            ("Stand 03", self.open_stand03, "images/stand03/gambar_stand03.jpg"),
+            ("Nasi Goreng", self.open_nasi_goreng, "images/mie.jpg"),
+            ("Geprek Bensu", self.open_teh_poci, "images/geprek.jpg")
         ]
 
-        for idx, (store_name, command) in enumerate(stores):
+        for idx, (store_name, command, img_path) in enumerate(stores):
             row = idx // 2
             col = idx % 2
-            
-            store_frame = ttk.Frame(stores_frame)
-            store_frame.grid(row=row, column=col, padx=20, pady=20)
 
-            # Try to load store logo
+            store_frame = ttk.Frame(stores_frame, padding=2)  
+            store_frame.grid(row=row, column=col, padx=20, pady=10)  
+
             try:
-                image = Image.open(f"images/{store_name.lower().replace(' ', '_')}.png")
-                image = image.resize((200, 200))
+                image = Image.open(img_path)
+                image = image.resize((250, 150))
                 photo = ImageTk.PhotoImage(image)
                 logo = tk.Label(store_frame, image=photo)
                 logo.image = photo
-                logo.pack(pady=10)
-            except:
-                # If image not found, show text only
-                pass
+                logo.grid(row=0, column=0, pady=(0,1))
+            except FileNotFoundError:
+                print(f"Gambar tidak ditemukan: {img_path}")
+                tk.Label(
+                    store_frame,
+                    text=store_name,
+                    font=("Helvetica", 12)
+                ).grid(row=0, column=0, pady=(0,1))
 
+            # tombol pilih kedai
             tk.Button(
                 store_frame,
                 text=store_name,
-                font=("Helvetica", 12, "bold"),
-                width=20,
+                font=("Helvetica", 10, "bold"),
+                width=30,
+                bg="#ADD8E6",
                 height=2,
                 command=command
-            ).pack()
+            ).grid(row=1, column=0)
 
-            tk.Button(
-                store_frame,
-                text="Kembali ke menu login",
-                font=("Helvetica", 12, "bold"),
-                width=20,
-                height=2,
-                command=self.kembali_ke_login
-            ).pack()
-    
+
     def kembali_ke_login(self):
-        self.root.destroy()  
-        global main_app_window  # Gunakan variabel global
+        """ Fungsi untuk kembali ke menu login """
+        self.root.destroy()
+        global main_app_window
         app = LoginWindow()
         app.window.mainloop()
 
     def open_stupid_chicken(self):
+        """ Fungsi untuk membuka window Stupid Chicken """
         self.root.withdraw()
         root = tk.Toplevel()
         app = Stupid_chicken(root, self.username, self.balance, self.root)
         root.mainloop()
 
-    def open_bakso_bakar(self):
-        self.root.destroy()
-        root = tk.Tk()
-        app = Bakso_bakar(root, self.username, self.balance)
+    def open_stand03(self):
+        """ Fungsi untuk membuka window Stand 03 """
+        self.root.withdraw()
+        root = tk.Toplevel()
+        app = stand03(root, self.username, self.balance, self.root)
         root.mainloop()
 
-    def open_mie_setan(self):
-        self.root.destroy()
-        root = tk.Tk()
-        app = Mie_setan(root, self.username, self.balance)
+    def open_nasi_goreng(self):
+        self.root.withdraw()
+        root = tk.Toplevel()
+        app = nasi_goreng(root, self.username, self.balance, self.root)
         root.mainloop()
 
-    def open_geprek_bensu(self):
-        self.root.destroy()
-        root = tk.Tk()
-        app = Geprek_bensu(root, self.username, self.balance)
-        root.mainloop()
-        
+    def open_teh_poci(self):
+        self.root.withdraw()
+        root = tk.Toplevel()
+        app = nasi_goreng(root, self.username, self.balance, self.root)
+        root.mainloop()      
 
-class Stupid_chicken:
+class Bakso_bakar:
     def __init__(self, root, username, initial_balance, parent):
         self.root = root
-        self.root.title("🐾 Stupid Chicken 🐾")
-        self.root.geometry("1920x1080")
+        self.root.title("🐾 Bakso Bakar 🐾")
+        self.root.geometry("1280x720")
         self.root.configure(bg="#f0f0f0")
 
         self.parent_root = parent
@@ -418,56 +513,25 @@ class Stupid_chicken:
         self.image_cache = {}
 
         # Data produk dengan path gambar
-        self.products = {
-            "Nasi Ayam Lada Hitam": {
-                "price": 12000,
-                "stock": 10,  # Ubah menjadi integer
-                "category": "Makanan",
-                "image": "images/stupidchiken_ladahitam.jpg",
-                "cook_time": 5
-            },
-            "Nasi Ayam Sambal Matah": {
-                "price": 12000,
-                "stock": 20,  # Ubah menjadi integer
-                "category": "Makanan",
-                "image": "images/stupidchiken_sambalmatah.jpeg",
-                "cook_time": 5
-            },
-            "Royal Canin": {
-                "price": 150000,
-                "stock": 20,
-                "category": "Makanan",
-                "image": "images/royal_canin.jpg",
-                "cook_time": 1
-            },
-            "Whiskas": {
-                "price": 85000,
-                "stock": 30,
-                "category": "Makanan",
-                "image": "images/whiskas.jpg",
-                "cook_time": 1
-            },
-            "Kandang Premium": {
-                "price": 750000,
-                "stock": 10,
-                "category": "Aksesoris",
-                "image": "images/cage.jpg",
-                "cook_time": 2
-            },
-            "Mainan Kucing": {
-                "price": 45000,
-                "stock": 25,
-                "category": "Aksesoris",
-                "image": "images/toy.jpg",
-                "cook_time": 1
-            },
-        }
+        self.products = self.load_products()
+
 
         self.cart = {}
         self.history_transaksi = []
         self.create_widgets()
         self.load_transaction_history()
 
+    def load_products(self):
+        """Load products from data_produk/bakso_bakar.json"""
+        try:
+            with open("data_produk/bakso_bakar.json", "r") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            messagebox.showerror("Error", "data_produk/bakso_bakar.json file not found!")
+            return {}
+        except json.JSONDecodeError:
+            messagebox.showerror("Error", "Error decoding data_produk/bakso_bakar.json!")
+            return {}
     def create_widgets(self):
         # Frame utama dengan proporsi 70-30
         self.main_frame = ttk.Frame(self.root)
@@ -478,7 +542,7 @@ class Stupid_chicken:
         header_frame.pack(fill=tk.X, pady=10)
 
         tk.Label(header_frame,
-                 text="Stupid Chicken",
+                 text="Stand 03",
                  font=("Helvetica", 24, "bold")).pack(side=tk.LEFT, padx=10)
 
         self.balance_label = tk.Label(header_frame,
@@ -549,6 +613,9 @@ class Stupid_chicken:
 
         ttk.Button(cart_frame, text="Kembali",
                    command=self.kembali_ke_pilih_kedai).pack(pady=5)
+        
+        ttk.Button(cart_frame, text="Lihat Pesanan",
+                   command=self.pesanan).pack(pady=5)
 
         # Bind events
         self.product_grid.bind("<Configure>", self.on_frame_configure)
@@ -729,24 +796,136 @@ class Stupid_chicken:
         self.cart.clear()
         self.update_cart_display()
 
-    def save_transaction(self, transaction):
+    def pesanan(self):
+        """Display order history and status for current user"""
+        # Create new window
+        pesanan_window = tk.Toplevel(self.root)
+        pesanan_window.title("Pesanan Saya")
+        pesanan_window.geometry("800x600")
+
+        # Create header
+        tk.Label(
+            pesanan_window,
+            text="Riwayat Pesanan",
+            font=("Helvetica", 16, "bold")
+        ).pack(pady=10)
+
+        # Create table
+        columns = ("Tanggal", "Items", "Total", "Status")
+        tree = ttk.Treeview(pesanan_window, columns=columns, show="headings", height=15)
+        
+        # Configure columns
+        tree.heading("Tanggal", text="Tanggal")
+        tree.heading("Items", text="Items")
+        tree.heading("Total", text="Total")
+        tree.heading("Status", text="Status")
+        
+        tree.column("Tanggal", width=150)
+        tree.column("Items", width=350)
+        tree.column("Total", width=150)
+        tree.column("Status", width=100)
+
+        # Add scrollbar
+        scrollbar = ttk.Scrollbar(pesanan_window, orient=tk.VERTICAL, command=tree.yview)
+        tree.configure(yscrollcommand=scrollbar.set)
+
+        # Pack elements
+        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=10)
+
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "transactions.json")
-            with open(transactions_path, "r") as f:
+            with open("data_transaksi/transactions.json", "r") as f:
                 transactions = json.load(f)
         except FileNotFoundError:
             transactions = []
 
-        transactions.append(transaction)
+        # Filter transactions by username
+        user_transactions = [
+            transaction for transaction in transactions
+            if transaction.get("username") == self.username
+        ]
 
-        with open(transactions_path, "w") as f:
-            json.dump(transactions, f, indent=4)
+        # Add transactions to table
+        for transaction in user_transactions:
+            items_str = ", ".join(f"{item['name']}({item['quantity']})" for item in transaction["items"])
+            tree.insert("", tk.END, values=(
+                transaction["datetime"],
+                items_str,  # Tampilkan items sebagai string
+                f"Rp {transaction['total']:,}",
+                transaction.get("status")
+            ))
+            
+        def show_details(event):
+            selected_item = tree.selection()
+            if selected_item:
+                item_id = selected_item[0]
+                values = tree.item(item_id)['values']
+                transaction_time = values[0]
+
+                # Cari transaksi yang sesuai dengan waktu yang dipilih
+                for transaction in user_transactions:
+                    if transaction["datetime"] == transaction_time:
+                        details = "Detail Pembelian:\n\n"
+                        for product in transaction["items"]:
+                            # Menggunakan get untuk menghindari KeyError jika 'name' tidak ada
+                            product_name = product.get("name", "Unknown Product")
+                            quantity = product.get("quantity", 0)
+
+                            # Memastikan produk ada di dictionary products
+                            if product_name in self.products:
+                                price = self.products[product_name]["price"]
+                                subtotal = price * quantity
+                                details += f"{product_name} x{quantity}\n"
+                                details += f"Rp {price:,} x {quantity} = Rp {subtotal:,}\n\n"
+                            else:
+                                details += f"{product_name} x{quantity} (Harga tidak tersedia)\n\n"
+
+                        # Tampilkan feedback jika ada
+                        if "feedback" in transaction:
+                            details += f"\nFeedback: {transaction['feedback']}"
+
+                        messagebox.showinfo("Detail Transaksi", details)
+                        break
+
+        tree.bind("<Double-1>", show_details)
+
+
+    def save_transaction(self, transaction):
+        try:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
+            history_path = os.path.join(script_dir, "data_transaksi/transactionshistory.json")
+
+            # Load transactions
+            with open(transactions_path, "r") as f:
+                transactions = json.load(f)
+
+            # Load transaction history
+            try:
+                with open(history_path, "r") as f:
+                    transaction_history = json.load(f)
+            except FileNotFoundError:
+                transaction_history = []
+
+            # Add transaction to both files
+            transactions.append(transaction)
+            transaction_history.append(transaction)
+
+            # Save transactions
+            with open(transactions_path, "w") as f:
+                json.dump(transactions, f, indent=4)
+
+            # Save transaction history
+            with open(history_path, "w") as f:
+                json.dump(transaction_history, f, indent=4)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Gagal menyimpan transaksi: {e}")
 
     def load_transaction_history(self):
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "transactions.json")
+            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
             with open(transactions_path, "r") as f:
                 self.transactions = json.load(f)  # Muat data ke self.transactions
         except FileNotFoundError:
@@ -836,9 +1015,9 @@ class Stupid_chicken:
         tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=10)
 
-        # Load transactions from transactions.json
+        # Load and display transactions from data_transaksi/transactionshistory.json
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        transactions_path = os.path.join(script_dir, "transactions.json")
+        transactions_path = os.path.join(script_dir, "data_transaksi/transactionshistory.json")  # Ganti ke data_transaksi/transactionshistory.json
         try:
             with open(transactions_path, "r") as f:
                 transactions = json.load(f)
@@ -862,36 +1041,36 @@ class Stupid_chicken:
             ))
 
         def show_details(event):
-             selected_item = tree.selection()
-             if selected_item:
-                 item_id = selected_item[0]
-                 values = tree.item(item_id)['values']
-                 transaction_time = values[0]
+            selected_item = tree.selection()
+            if selected_item:
+                item_id = selected_item[0]
+                values = tree.item(item_id)['values']
+                transaction_time = values[0]
 
-                 # Cari transaksi yang sesuai dengan waktu yang dipilih
-                 for transaction in user_transactions:
-                     if transaction["datetime"] == transaction_time:
-                         details = "Detail Pembelian:\n\n"
-                         for product in transaction["items"]:
-                             # Menggunakan get untuk menghindari KeyError jika 'name' tidak ada
-                             product_name = product.get("name", "Unknown Product")
-                             quantity = product.get("quantity", 0)
-                             
-                             # Memastikan produk ada di dictionary products
-                             if product_name in self.products:
-                                 price = self.products[product_name]["price"]
-                                 subtotal = price * quantity
-                                 details += f"{product_name} x{quantity}\n"
-                                 details += f"Rp {price:,} x {quantity} = Rp {subtotal:,}\n\n"
-                             else:
-                                 details += f"{product_name} x{quantity} (Harga tidak tersedia)\n\n"
+                # Cari transaksi yang sesuai dengan waktu yang dipilih
+                for transaction in user_transactions:
+                    if transaction["datetime"] == transaction_time:
+                        details = "Detail Pembelian:\n\n"
+                        for product in transaction["items"]:
+                            # Menggunakan get untuk menghindari KeyError jika 'name' tidak ada
+                            product_name = product.get("name", "Unknown Product")
+                            quantity = product.get("quantity", 0)
 
-                         # Tampilkan feedback jika ada
-                         if "feedback" in transaction:
-                             details += f"\nFeedback: {transaction['feedback']}"
+                            # Memastikan produk ada di dictionary products
+                            if product_name in self.products:
+                                price = self.products[product_name]["price"]
+                                subtotal = price * quantity
+                                details += f"{product_name} x{quantity}\n"
+                                details += f"Rp {price:,} x {quantity} = Rp {subtotal:,}\n\n"
+                            else:
+                                details += f"{product_name} x{quantity} (Harga tidak tersedia)\n\n"
 
-                         messagebox.showinfo("Detail Transaksi", details)
-                         break
+                        # Tampilkan feedback jika ada
+                        if "feedback" in transaction:
+                            details += f"\nFeedback: {transaction['feedback']}"
+
+                        messagebox.showinfo("Detail Transaksi", details)
+                        break
 
         tree.bind("<Double-1>", show_details)
 
@@ -904,6 +1083,8 @@ class Stupid_chicken:
 
     def filter_products(self):
         self.display_products()
+
+
 
 if __name__ == "__main__":
     app = LoginWindow()

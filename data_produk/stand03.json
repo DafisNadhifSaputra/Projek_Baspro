@@ -1,0 +1,51 @@
+{
+    "Mie Yamin Pedas": {
+        "price": 8000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stand03/mie_yamin_pedas.jpg",
+        "cook_time": 5
+    },
+    "Mie Yamin Manis": {
+        "price": 8000,
+        "stock": 15,
+        "category": "Makanan",
+        "image": "images/stand03/mie_yamin_manis.jpg",
+        "cook_time": 5
+    },
+    "Mie Yamin Asin": {
+        "price": 8000,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/stand03/mie_yamin_asin.jpg",
+        "cook_time": 5
+    },
+    "Pentol(kecil)": {
+        "price": 500,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/stand03/pentol_kecil.jpg",
+        "cook_time": 1
+    },
+    "Pentol(besar)": {
+        "price": 1500,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/stand03/pentol_besar.jpg",
+        "cook_time": 1
+    },
+    "Tahu": {
+        "price": 500,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/stand03/tahu.jpg",
+        "cook_time": 1
+    },
+    "Dimsum": {
+        "price": 10000,
+        "stock": 25,
+        "category": "Makanan",
+        "image": "images/stand03/dimsum.jpg",
+        "cook_time": 2
+    }
+}

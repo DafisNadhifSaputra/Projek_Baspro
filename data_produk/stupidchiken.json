@@ -1,0 +1,37 @@
+{
+    "Nasi Ayam Lada Hitam": {
+        "price": 12000,
+        "stock": 15,
+        "category": "Makanan",
+        "image": "images/stupidchiken/stupidchiken_ladahitam.jpg",
+        "cook_time": 5
+    },
+    "Nasi Ayam Sambal Matah": {
+        "price": 12000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stupidchiken/stupidchiken_sambalmatah.jpeg",
+        "cook_time": 5
+    },
+    "Nasi Ayam Saus Sambal": {
+        "price": 12000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stupidchiken/stupidchiken_saussambel.jpg",
+        "cook_time": 5
+    },
+    "Nasi Ayam Teriyaki": {
+        "price": 12000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stupidchiken/stupidchiken_saussambel.jpg",
+        "cook_time": 5
+    },
+    "Esteh": {
+        "price": 3000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stupidchiken/stupidchiken_esteh.png",
+        "cook_time": 1
+    }
+}

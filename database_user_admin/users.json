@@ -15,9 +15,13 @@
         "password": "admin123",
         "balance": 5000000
     },
+    "admin5": {
+        "password": "admin123",
+        "balance": 5000000
+    },
     "dafis.23143@mhs.unesa.ac.id": {
         "password": "admin123",
-        "balance": 4928000
+        "balance": 4792000
     },
     "mahesa.23157@mhs.unesa.ac.id": {
         "password": "admin123",
