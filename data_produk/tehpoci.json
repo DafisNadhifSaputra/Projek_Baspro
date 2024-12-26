@@ -1,0 +1,44 @@
+{
+    "Original Tea": {
+        "price": 5000,
+        "stock": 20,
+        "category": "Minuman",
+        "image": "images/teh_poci/original_tea.jpg",
+        "cook_time": 2
+    },
+    "Jasmine tea": {
+        "price": 5000,
+        "stock": 15,
+        "category": "Minuman",
+        "image": "images/teh_poci/jasmine_tea.jpg",
+        "cook_time": 2
+    },
+    "Orange tea": {
+        "price": 5000,
+        "stock": 10,
+        "category": "Minuman",
+        "image": "images/teh_poci/orange_tea.jpg",
+        "cook_time": 2
+    },
+    "Mango Tea": {
+        "price": 5000,
+        "stock": 10,
+        "category": "Minuman",
+        "image": "images/teh_poci/mango_tea.jpg",
+        "cook_time": 2
+    },
+    "Milk Tea": {
+        "price": 5000,
+        "stock": 10,
+        "category": "Minuman",
+        "image": "images/teh_poci/milk_tea.jpg",
+        "cook_time": 2
+    },
+    "Chocolate Tea": {
+        "price": 5000,
+        "stock": 10,
+        "category": "Minuman",
+        "image": "images/teh_poci/chocolate_tea.jpg",
+        "cook_time": 2
+    }
+}

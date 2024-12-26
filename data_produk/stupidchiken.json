@@ -30,7 +30,7 @@
     "Esteh": {
         "price": 3000,
         "stock": 20,
-        "category": "Makanan",
+        "category": "Minuman",
         "image": "images/stupidchiken/stupidchiken_esteh.png",
         "cook_time": 1
     }

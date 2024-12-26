@@ -2,8 +2,10 @@ import tkinter as tk
 from tkinter import messagebox, ttk, simpledialog
 import json
 from datetime import datetime
-from store.stupidchicken import Stupid_chicken
-from store.stand03 import stand03
+from toko.stupidchicken import Stupid_chicken
+from toko.stand03 import stand03
+from toko.nasi_goreng import nasi_goreng
+from toko.teh_poci import teh_poci
 import locale
 from PIL import Image, ImageTk
 import os
@@ -251,9 +253,9 @@ class AdminWindow:
         """ Fungsi untuk mendapatkan nama file produk berdasarkan admin_id """
         store_mapping = {
             "admin1": "stupidchiken.json",
-            "admin2": "bakso_bakar.json",
-            "admin3": "mie_setan.json",
-            "admin4": "geprek_bensu.json"
+            "admin2": "stand03.json",
+            "admin3": "nasigoreng.json",
+            "admin4": "tehpoci.json"
         }
         return store_mapping.get(admin_id, "unknown.json")
     
@@ -407,8 +409,8 @@ class pilih_kedai:
 
         tk.Label(
             title_frame,
-            text="Pilih Kedai UNESA",
-            font=("Helvetica", 24, "bold"),
+            text="Pilih Kedai Food Court UNESA",
+            font=("Helvetica", 25, "bold"),
             bg="#f0f0f0"
         ).pack()
 
@@ -427,8 +429,8 @@ class pilih_kedai:
         stores = [
             ("Stupid Chicken", self.open_stupid_chicken, "images/stupidchiken/gambar_stupidchiken.jpg"),
             ("Stand 03", self.open_stand03, "images/stand03/gambar_stand03.jpg"),
-            ("Nasi Goreng", self.open_nasi_goreng, "images/mie.jpg"),
-            ("Geprek Bensu", self.open_teh_poci, "images/geprek.jpg")
+            ("Nasi Goreng", self.open_nasi_goreng, "images/nasi_goreng/gambar_nasi_goreng.jpg"),
+            ("Teh Poci", self.open_teh_poci, "images/teh_poci/gambar_teh_poci.jpg")
         ]
 
         for idx, (store_name, command, img_path) in enumerate(stores):
@@ -436,7 +438,7 @@ class pilih_kedai:
             col = idx % 2
 
             store_frame = ttk.Frame(stores_frame, padding=2)  
-            store_frame.grid(row=row, column=col, padx=20, pady=10)  
+            store_frame.grid(row=row, column=col, padx=50, pady=10)  
 
             try:
                 image = Image.open(img_path)
@@ -494,7 +496,7 @@ class pilih_kedai:
     def open_teh_poci(self):
         self.root.withdraw()
         root = tk.Toplevel()
-        app = nasi_goreng(root, self.username, self.balance, self.root)
+        app = teh_poci(root, self.username, self.balance, self.root)
         root.mainloop()      
 
 if __name__ == "__main__":

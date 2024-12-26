@@ -6,10 +6,10 @@ import locale
 from PIL import Image, ImageTk
 import os
 
-class Stupid_chicken:
+class nasi_goreng:
     def __init__(self, root, username, initial_balance, parent):
         self.root = root
-        self.root.title("🐾 Stupid Chicken 🐾")
+        self.root.title("🐾 Nasi/Mie Goreng 🐾")
         lebar_layar = self.root.winfo_screenwidth()
         tinggi_layar = self.root.winfo_screenheight()
         self.root.geometry(f"{lebar_layar}x{tinggi_layar}")
@@ -32,15 +32,15 @@ class Stupid_chicken:
         self.load_transaction_history()
 
     def load_products(self):
-        """Load products from data_produk/stupidchiken.json"""
+        """Load products from data_produk/nasigoreng.json"""
         try:
-            with open("data_produk/stupidchiken.json", "r") as f:
+            with open("data_produk/nasigoreng.json", "r") as f:
                 return json.load(f)
         except FileNotFoundError:
-            messagebox.showerror("Error", "data_produk/stupidchiken.json file not found!")
+            messagebox.showerror("Error", "data_produk/nasigoreng.json file not found!")
             return {}
         except json.JSONDecodeError:
-            messagebox.showerror("Error", "Error decoding data_produk/stupidchiken.json!")
+            messagebox.showerror("Error", "Error decoding data_produk/nasigoreng.json!")
             return {}
 
     def create_widgets(self):

@@ -1,0 +1,51 @@
+{
+    "Nasi Goreng biasa": {
+        "price": 10000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/nasi_goreng_biasa.jpg",
+        "cook_time": 5
+    },
+    "Nasi Goreng Telur": {
+        "price": 12000,
+        "stock": 15,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/nasi_goreng_telur.jpg",
+        "cook_time": 5
+    },
+    "Nasi Goreng Sosis": {
+        "price": 11000,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/nasi_goreng_sosis.jpg",
+        "cook_time": 5
+    },
+    "Nasi Goreng Special": {
+        "price": 13000,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/nasi_goreng_special.jpg",
+        "cook_time": 1
+    },
+    "Mie Goreng Telur": {
+        "price": 12000,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/mie_goreng_telur.jpg",
+        "cook_time": 1
+    },
+    "Mie Goreng Sosis": {
+        "price": 500,
+        "stock": 10,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/mie_goreng_sosis.jpg",
+        "cook_time": 1
+    },
+    "Mie Goreng Special": {
+        "price": 10000,
+        "stock": 25,
+        "category": "Makanan",
+        "image": "images/nasi_goreng/mie_goreng_special.jpg",
+        "cook_time": 2
+    }
+}
