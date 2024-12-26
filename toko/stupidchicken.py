@@ -402,9 +402,8 @@ class Stupid_chicken:
     def save_transaction(self, transaction):
         """Menyimpan transaksi ke dalam file JSON"""
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
-            history_path = os.path.join(script_dir, "data_transaksi/transactionshistory.json")
+            transactions_path = "data_transaksi/transactions.json"
+            history_path = "data_transaksi/transactionshistory.json"
 
             # Load transaksi
             with open(transactions_path, "r") as f:
@@ -435,8 +434,7 @@ class Stupid_chicken:
     def load_transaction_history(self):
         """Load transaksi dari file JSON"""
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
+            transactions_path = "data_transaksi/transactions.json"
             with open(transactions_path, "r") as f:
                 self.transactions = json.load(f)
         except FileNotFoundError:
@@ -482,8 +480,7 @@ class Stupid_chicken:
     def update_balance_in_file(self, username, new_balance):
         """Update saldo user di file users.json"""
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            users_path = os.path.join(script_dir, "database_user_admin/users.json")
+            users_path = "database_user_admin/users.json"
             with open(users_path, "r") as f:
                 users = json.load(f)
 

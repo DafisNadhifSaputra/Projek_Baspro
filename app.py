@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk, simpledialog
 import json
-from datetime import datetime
 from toko.stupidchicken import Stupid_chicken
 from toko.stand03 import stand03
 from toko.nasi_goreng import nasi_goreng
@@ -52,6 +51,7 @@ class LoginWindow:
             width=10,
             height=2,
             font=("Helvetica", 10, "bold"),
+            bg="lightblue",
             command=self.login
         )
         login_button.pack(pady=20)
@@ -384,7 +384,7 @@ class pilih_kedai:
 
     def create_widgets(self):
         """ Fungsi untuk membuat widget di dalam window """
-        main_frame = ttk.Frame(self.root, padding="20")
+        main_frame = ttk.Frame(self.root, padding=20)
         main_frame.pack(fill=tk.BOTH, expand=True)
         main_frame.pack_propagate(False)
 
@@ -434,8 +434,8 @@ class pilih_kedai:
         ]
 
         for idx, (store_name, command, img_path) in enumerate(stores):
-            row = idx // 2
-            col = idx % 2
+            row = idx // 3
+            col = idx % 3
 
             store_frame = ttk.Frame(stores_frame, padding=2)  
             store_frame.grid(row=row, column=col, padx=50, pady=10)  
@@ -488,12 +488,14 @@ class pilih_kedai:
         root.mainloop()
 
     def open_nasi_goreng(self):
+        """ Fungsi untuk membuka window Nasi Goreng """
         self.root.withdraw()
         root = tk.Toplevel()
         app = nasi_goreng(root, self.username, self.balance, self.root)
         root.mainloop()
 
     def open_teh_poci(self):
+        """ Fungsi untuk membuka window Teh Poci """
         self.root.withdraw()
         root = tk.Toplevel()
         app = teh_poci(root, self.username, self.balance, self.root)

@@ -532,8 +532,7 @@ class stand03:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=10)
 
         # load transaksi history dari file JSON
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        transactions_path = os.path.join(script_dir, "data_transaksi/transactionshistory.json")  # Ganti ke data_transaksi/transactionshistory.json
+        transactions_path = "data_transaksi/transactionshistory.json"
         try:
             with open(transactions_path, "r") as f:
                 transactions = json.load(f)
