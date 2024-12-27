@@ -32,15 +32,15 @@ class teh_poci:
         self.load_transaction_history()
 
     def load_products(self):
-        """Load products from data_produk/stupidchiken.json"""
+        """Load products from data_produk/tehpoci.json"""
         try:
             with open("data_produk/tehpoci.json", "r") as f:
                 return json.load(f)
         except FileNotFoundError:
-            messagebox.showerror("Error", "data_produk/stupidchiken.json file not found!")
+            messagebox.showerror("Error", "data_produk/tehpoci.json file not found!")
             return {}
         except json.JSONDecodeError:
-            messagebox.showerror("Error", "Error decoding data_produk/stupidchiken.json!")
+            messagebox.showerror("Error", "Error decoding data_produk/tehpoci.json!")
             return {}
 
     def create_widgets(self):

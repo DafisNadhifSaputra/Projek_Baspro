@@ -31,7 +31,7 @@ class stand05:
         self.load_transaction_history()
 
     def load_products(self):
-        """Load products from data_produk/stupidchiken.json"""
+        """Load products from data_produk/stand05.json"""
         try:
             with open("data_produk/stand05.json", "r") as f:
                 return json.load(f)
@@ -52,7 +52,7 @@ class stand05:
         header_frame.pack(fill=tk.X, pady=10)
 
         tk.Label(header_frame,
-                 text="Stupid Chicken",
+                 text="Stand 05",
                  font=("Helvetica", 24, "bold")).pack(side=tk.LEFT, padx=10)
 
         self.balance_label = tk.Label(header_frame,

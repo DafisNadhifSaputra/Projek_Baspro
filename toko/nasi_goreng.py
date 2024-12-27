@@ -53,7 +53,7 @@ class nasi_goreng:
         header_frame.pack(fill=tk.X, pady=10)
 
         tk.Label(header_frame,
-                 text="Stupid Chicken",
+                 text="Nasi/Mie Goreng",
                  font=("Helvetica", 24, "bold")).pack(side=tk.LEFT, padx=10)
 
         self.balance_label = tk.Label(header_frame,

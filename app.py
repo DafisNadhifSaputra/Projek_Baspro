@@ -394,7 +394,7 @@ class pilih_kedai:
         self.root.title("Pilih Kedai")
         self.root.geometry("1280x720")
         self.root.configure(bg="#f0f0f0")
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         self.parent = parent
         self.username = username
