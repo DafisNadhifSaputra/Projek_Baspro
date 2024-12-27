@@ -25,7 +25,7 @@ class LoginWindow:
         top_frame = ttk.Frame(self.window, padding=(5, 0))
         top_frame.pack(fill=tk.X)
 
-        main_frame = ttk.Frame(self.window, padding=10)
+        main_frame = ttk.Frame(self.window, padding="20")
         main_frame.pack(fill=tk.BOTH, expand=True)
 
 
@@ -41,7 +41,7 @@ class LoginWindow:
 
         title_label = tk.Label(
             main_frame,
-            text="🐾 Food Court UNESA 🐾",
+            text="🐾 Kantin UNESA 🐾",
             font=("Helvetica", 30, "bold"),
             bg="#f0f0f0"
         )
@@ -452,7 +452,7 @@ class pilih_kedai:
             ("Nasi Goreng", self.open_nasi_goreng, "images/nasi_goreng/gambar_nasi_goreng.jpg"),
             ("Teh Poci", self.open_teh_poci, "images/teh_poci/gambar_teh_poci.jpg"),
             ("Stand 05", self.open_stand05, "images/stand05/gambar_stand05.jpg"),
-            ("El Food", self.open_elfood, "images/elfood/gambar_elfood.jpg")
+            ("El Food", self.open_elfood, "images/elfood/gambar_stand05.jpg")
         ]
 
         for idx, (store_name, command, img_path) in enumerate(stores):

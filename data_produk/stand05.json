@@ -1,0 +1,37 @@
+{
+    "Ayam Geprek Sambal Bawang": {
+        "price": 11000,
+        "stock": 15,
+        "category": "Makanan",
+        "image": "images/stand05/geprek_sambal_bawang.jpg",
+        "cook_time": 5
+    },
+    "Ayam Geprek Sambal Matah": {
+        "price": 12000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stand05/geprek_sambal_matah.jpg",
+        "cook_time": 5
+    },
+    "Ayam Geprek Original": {
+        "price": 10000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stand05/geprek_original.jpg",
+        "cook_time": 5
+    },
+    "Nasi Campur": {
+        "price": 11000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/stand05/nasi_campur.jpg",
+        "cook_time": 5
+    },
+    "Nasi Ayam Kecap": {
+        "price": 11000,
+        "stock": 20,
+        "category": "Minuman",
+        "image": "images/stand05/nasi_ayam_kecap.jpg",
+        "cook_time": 5
+    }
+}

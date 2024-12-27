@@ -1,0 +1,51 @@
+{
+    "Burger": {
+        "price": 6000,
+        "stock": 15,
+        "category": "Makanan",
+        "image": "images/elfood/burger.jpg",
+        "cook_time": 3
+    },
+    "Kebab": {
+        "price": 6000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/elfood/kebab.jpg",
+        "cook_time": 3
+    },
+    "Kentang": {
+        "price": 6000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/elfood/kentang.jpg",
+        "cook_time": 3
+    },
+    "Mie Goreng Indomie": {
+        "price": 7000,
+        "stock": 20,
+        "category": "Makanan",
+        "image": "images/elfood/mie_goreng_indomie.jpg",
+        "cook_time": 5
+    },
+    "Chocolate Tea": {
+        "price": 6000,
+        "stock": 20,
+        "category": "Minuman",
+        "image": "images/elfood/chocolate_tea(1).jpg",
+        "cook_time": 5
+    },
+    "Susu Soda": {
+        "price": 6000,
+        "stock": 20,
+        "category": "Minuman",
+        "image": "images/elfood/susu_soda.jpg",
+        "cook_time": 5
+    },
+    "Milk Tea": {
+        "price": 6000,
+        "stock": 20,
+        "category": "Minuman",
+        "image": "images/elfood/milk_tea(1).jpg",
+        "cook_time": 1
+    }
+}
