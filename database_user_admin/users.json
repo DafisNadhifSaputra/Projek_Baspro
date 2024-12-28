@@ -19,7 +19,15 @@
         "password": "admin123",
         "balance": 5000000
     },
+    "admin6": {
+        "password": "admin123",
+        "balance": 5000000
+    },
     "dafis.23143@mhs.unesa.ac.id": {
+        "password": "admin123",
+        "balance": 4758000
+    },
+    "arfian.23026@mhs.unesa.ac.id": {
         "password": "admin123",
         "balance": 4758000
     },

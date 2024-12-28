@@ -322,7 +322,7 @@ class AdminWindow:
 
         # Load produk berdasarkan nama toko
         for transaction in self.transactions:
-            if any(item in self.products for item in [i['name'] for i in transaction["items"]]):  # Ambil semua item dari transaksi
+            if any(item in self.products for item in [i['name'] for i in transaction["items"]]):
                 items_str = ", ".join(f"{item['name']}({item['quantity']})" for item in transaction["items"])
 
                 self.orders_tree.insert("", tk.END, values=(
