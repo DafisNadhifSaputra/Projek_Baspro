@@ -112,7 +112,7 @@ class LoginWindow:
                 app = pilih_kedai(root, username, users[username]["balance"], self.window)
                 root.mainloop()
             else:
-                messagebox.showerror("Error", "Password!")
+                messagebox.showerror("Error", "Password/Email tidak ditemukan!")
         else:
             messagebox.showerror("Error", "Pengguna tidak ditemukan!")
 

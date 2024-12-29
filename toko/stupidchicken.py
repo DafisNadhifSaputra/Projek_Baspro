@@ -4,7 +4,6 @@ from datetime import datetime
 import json
 import locale
 from PIL import Image, ImageTk
-import os
 
 class Stupid_chicken:
     def __init__(self, root, username, initial_balance, parent):
@@ -314,14 +313,14 @@ class Stupid_chicken:
         self.update_cart_display()
 
     def pesanan(self):
-        """Menampilkan riwayat pesanan"""
+        """Menampilkan pesanan"""
         pesanan_window = tk.Toplevel(self.root)
         pesanan_window.title("Pesanan Saya")
         pesanan_window.geometry("800x600")
 
         tk.Label(
             pesanan_window,
-            text="Riwayat Pesanan",
+            text="Pesanan",
             font=("Helvetica", 16, "bold")
         ).pack(pady=10)
 
@@ -510,7 +509,7 @@ class Stupid_chicken:
 
         tk.Label(
             pesanan_window,
-            text="Riwayat Pesanan",
+            text="Riwayat Transaksi",
             font=("Helvetica", 16, "bold")
         ).pack(pady=10)
 

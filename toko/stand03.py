@@ -4,7 +4,6 @@ from datetime import datetime
 import json
 import locale
 from PIL import Image, ImageTk
-import os
 
 class stand03:
     def __init__(self, root, username, initial_balance, parent):
@@ -315,14 +314,14 @@ class stand03:
         self.update_cart_display()
 
     def pesanan(self):
-        """Menampilkan riwayat pesanan"""
+        """Menampilkan pesanan"""
         pesanan_window = tk.Toplevel(self.root)
         pesanan_window.title("Pesanan Saya")
         pesanan_window.geometry("800x600")
 
         tk.Label(
             pesanan_window,
-            text="Riwayat Pesanan",
+            text="Pesanan",
             font=("Helvetica", 16, "bold")
         ).pack(pady=10)
 
@@ -403,9 +402,8 @@ class stand03:
     def save_transaction(self, transaction):
         """Menyimpan transaksi ke dalam file JSON"""
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
-            history_path = os.path.join(script_dir, "data_transaksi/transactionshistory.json")
+            transactions_path = "data_transaksi/transactions.json"
+            history_path = "data_transaksi/transactionshistory.json"
 
             # Load transaksi
             with open(transactions_path, "r") as f:
@@ -436,8 +434,7 @@ class stand03:
     def load_transaction_history(self):
         """Load transaksi dari file JSON"""
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            transactions_path = os.path.join(script_dir, "data_transaksi/transactions.json")
+            transactions_path = "data_transaksi/transactions.json"
             with open(transactions_path, "r") as f:
                 self.transactions = json.load(f)
         except FileNotFoundError:
@@ -483,8 +480,7 @@ class stand03:
     def update_balance_in_file(self, username, new_balance):
         """Update saldo user di file users.json"""
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            users_path = os.path.join(script_dir, "database_user_admin/users.json")
+            users_path = "database_user_admin/users.json"
             with open(users_path, "r") as f:
                 users = json.load(f)
 
@@ -512,17 +508,17 @@ class stand03:
         history_window.title("Riwayat Transaksi")
         history_window.geometry("800x400")
 
-        columns = ("Tanggal", "Total", "Estimasi Waktu", "Status")
+        columns = ("Tanggal", "Total", "Items", "Status")
         tree = ttk.Treeview(history_window, columns=columns, show="headings")
 
         tree.heading("Tanggal", text="Tanggal")
         tree.heading("Total", text="Total")
-        tree.heading("Estimasi Waktu", text="Estimasi Waktu")
+        tree.heading("Items", text="Items")
         tree.heading("Status", text="Status")
 
-        tree.column("Tanggal", width=200, anchor=tk.W)
+        tree.column("Tanggal", width=150, anchor=tk.W)
         tree.column("Total", width=150, anchor=tk.CENTER)
-        tree.column("Estimasi Waktu", width=150, anchor=tk.CENTER)
+        tree.column("Items", width=200, anchor=tk.CENTER)
         tree.column("Status", width=100, anchor=tk.CENTER)
 
         scrollbar = ttk.Scrollbar(history_window, orient="vertical", command=tree.yview)
@@ -546,12 +542,13 @@ class stand03:
         ]
 
         for transaction in user_transactions:
-            # Tambahkan data transaksi ke dalam treeview
+            # menambahkan data transaksi ke dalam treeview
+            items_str = ", ".join(f"{item['name']}({item['quantity']})" for item in transaction["items"])
             datetime_str = transaction.get("datetime", transaction.get("waktu", "N/A"))
             tree.insert("", tk.END, values=(
                 datetime_str,
                 f"Rp {transaction['total']:,}",
-                f"{transaction['estimasi_waktu']} menit" if "estimasi_waktu" in transaction else "N/A",
+                items_str,
                 transaction.get("status", "N/A")
             ))
 

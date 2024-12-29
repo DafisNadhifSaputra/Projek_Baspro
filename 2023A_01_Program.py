@@ -25,7 +25,7 @@ class LoginWindow:
         top_frame = ttk.Frame(self.window, padding=(5, 0))
         top_frame.pack(fill=tk.X)
 
-        main_frame = ttk.Frame(self.window, padding="20")
+        main_frame = ttk.Frame(self.window, padding=10)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
 
@@ -41,7 +41,7 @@ class LoginWindow:
 
         title_label = tk.Label(
             main_frame,
-            text="🐾 Kantin UNESA 🐾",
+            text="🐾 Food Court UNESA 🐾",
             font=("Helvetica", 30, "bold"),
             bg="#f0f0f0"
         )
@@ -112,7 +112,7 @@ class LoginWindow:
                 app = pilih_kedai(root, username, users[username]["balance"], self.window)
                 root.mainloop()
             else:
-                messagebox.showerror("Error", "Password!")
+                messagebox.showerror("Error", "Password/Email tidak ditemukan!")
         else:
             messagebox.showerror("Error", "Pengguna tidak ditemukan!")
 
@@ -322,7 +322,7 @@ class AdminWindow:
 
         # Load produk berdasarkan nama toko
         for transaction in self.transactions:
-            if any(item in self.products for item in [i['name'] for i in transaction["items"]]):  # Ambil semua item dari transaksi
+            if any(item in self.products for item in [i['name'] for i in transaction["items"]]):
                 items_str = ", ".join(f"{item['name']}({item['quantity']})" for item in transaction["items"])
 
                 self.orders_tree.insert("", tk.END, values=(
@@ -394,7 +394,7 @@ class pilih_kedai:
         self.root.title("Pilih Kedai")
         self.root.geometry("1280x720")
         self.root.configure(bg="#f0f0f0")
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         self.parent = parent
         self.username = username
@@ -452,7 +452,7 @@ class pilih_kedai:
             ("Nasi Goreng", self.open_nasi_goreng, "images/nasi_goreng/gambar_nasi_goreng.jpg"),
             ("Teh Poci", self.open_teh_poci, "images/teh_poci/gambar_teh_poci.jpg"),
             ("Stand 05", self.open_stand05, "images/stand05/gambar_stand05.jpg"),
-            ("El Food", self.open_elfood, "images/elfood/gambar_stand05.jpg")
+            ("El Food", self.open_elfood, "images/elfood/gambar_elfood.jpg")
         ]
 
         for idx, (store_name, command, img_path) in enumerate(stores):
