@@ -460,6 +460,9 @@ class stand03:
         for product, quantity in self.cart.items():
             self.products[product]["stock"] -= quantity
 
+        with open("data_produk/stand03.json", "w") as f:
+            json.dump(self.products, f, indent=4)
+
         transaction = {
             "username": self.username,
             "datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
